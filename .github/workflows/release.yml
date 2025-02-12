@@ -1,0 +1,42 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Install packages
+        run: |
+          sudo apt update
+          sudo apt install -y simutrans-makeobj
+
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Run Makeobj
+        run: |
+          makeobj pak128 vehicle.Gal_JRS_1000.pak ./1000/*.dat >./null
+          makeobj pak128 vehicle.Gal_JRS_1500.pak ./1500/*.dat >./null
+          makeobj pak128 vehicle.Gal_JRS_HV.pak ./HV/*.dat >./null
+        
+      - name: Archive Release
+        run: zip gal_JRS.zip *.pak compat_archive/${{ github.ref_name }}/*
+        
+      # - name: Edit ReleaseNote
+      #   run: sed -i '1i**ダウンロードはページ下部にあります**\n' ReadMe.Md
+        
+      - name: Upload Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "gal_KR-commuter.zip"
+          body:
+            "詳しい説明・更新履歴は(readme)[readme.md]をご覧ください。
+            "
+          token: ${{ secrets.GITHUB_TOKEN }}
