@@ -38,5 +38,6 @@ jobs:
           artifacts: "gal_KR-commuter.zip"
           body:
             "詳しい説明・更新履歴は(readme)[readme.md]をご覧ください。
-            "
+            
+            ${{ github.event.head_commit.message }}"
           token: ${{ secrets.GITHUB_TOKEN }}
