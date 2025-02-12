@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+env:
+  ZIP_FILE: gal_JRS.zip
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -27,17 +30,14 @@ jobs:
           makeobj pak128 vehicle.Gal_JRS_HV.pak ./HV/*.dat >./null
         
       - name: Archive Release
-        run: zip gal_JRS.zip *.pak compat_archive/${{ github.ref_name }}/*
-        
-      # - name: Edit ReleaseNote
-      #   run: sed -i '1i**ダウンロードはページ下部にあります**\n' ReadMe.Md
+        run: zip ${{ env.ZIP_FILE }} *.pak compat_archive/${{ github.ref_name }}/*
         
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "gal_KR-commuter.zip"
+          artifacts: "${{ env.ZIP_FILE }}"
           body:
-            "詳しい説明・更新履歴は(readme)[readme.md]をご覧ください。
+            "詳しい説明・更新履歴は[readme](readme.md)をご覧ください。
             
             ${{ github.event.head_commit.message }}"
           token: ${{ secrets.GITHUB_TOKEN }}
